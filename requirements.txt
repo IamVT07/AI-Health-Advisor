@@ -1,6 +1,8 @@
 Flask
+Flask-Cors
+Flask-Login
 pymongo
 dnspython
-gunicorn
 python-dotenv
 deep-translator
+gunicorn
