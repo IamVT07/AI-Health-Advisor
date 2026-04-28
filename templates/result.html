@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosis Result</title>
+    <style>
+        /* --- DARK THEME MATCHING --- */
+        body { 
+            background: #121212; /* Black Background */
+            color: white; 
+            font-family: sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0;
+        }
+        
+        .card { 
+            background: #1e1e1e; /* Dark Grey Card */
+            padding: 40px; 
+            border-radius: 12px; 
+            text-align: center; 
+            border: 1px solid #333; 
+            max-width: 450px; 
+            width: 100%; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+        }
+        
+        h1 { 
+            color: #ff4b4b; /* Theme Red Color */
+            font-size: 2.5rem;
+            margin: 10px 0;
+        }
+        
+        p { color: #bbb; }
+        
+        .doctor-box {
+            background: #252525;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #444;
+        }
+
+        /* Red Button (Theme Match) */
+        .btn { 
+            display: inline-block; 
+            padding: 12px 30px; 
+            background: #ff4b4b; /* RED BUTTON */
+            color: white; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            margin-top: 25px; 
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .btn:hover { background: #e04343; } /* Hover Effect */
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <p>Based on the symptoms provided, our AI analysis suggests:</p>
+        
+        <h1>{{ disease }}</h1>
+        
+        <div class="doctor-box">
+            <p style="margin:0; font-size: 0.9rem;">Suggested Specialist:</p>
+            <strong style="color: #f1c40f; font-size: 1.2rem;">{{ doctor }}</strong>
+        </div>
+
+        <a href="/dashboard" class="btn">← Back to Dashboard</a>
+    </div>
+
+</body>
+</html>

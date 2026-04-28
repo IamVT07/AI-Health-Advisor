@@ -1,0 +1,331 @@
+/* --- RESET & VARIABLES --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+:root {
+  --bg1: #030303; /* near black */
+  --bg2: #0f0f0f; /* dark */
+  --accent: #ff3b3b; /* vivid red */
+  --accent-2: #ff8a80; /* light red */
+  --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+  --glass-border: 1px solid rgba(255,59,59,0.15);
+  --text-main: #f8eded;
+  --text-muted: #cfcaca;
+}
+
+body {
+  background: radial-gradient(1000px 500px at 10% 10%, rgba(255,59,59,0.035), transparent 8%),
+              radial-gradient(800px 400px at 90% 90%, rgba(255,138,128,0.02), transparent 10%),
+              linear-gradient(180deg, var(--bg1), var(--bg2));
+  min-height: 100vh;
+  color: var(--text-main);
+  /* Default alignment for auth pages; can be overridden by specific page layouts */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- SHARED COMPONENTS --- */
+
+/* The Main Glass Container */
+.container, .auth-form, .health-card, .dashboard-container {
+  width: 940px;
+  max-width: 96%;
+  text-align: center;
+  padding: 28px;
+  border-radius: 16px;
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px) saturate(110%);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.01);
+  position: relative;
+  overflow: hidden;
+  margin: 20px auto;
+}
+
+/* Headings */
+h1, h2, h3 {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 6px 18px rgba(255,59,59,0.06);
+  letter-spacing: 0.6px;
+  margin-bottom: 15px;
+}
+
+/* Buttons */
+button, .btn {
+  padding: 12px 22px;
+  background: linear-gradient(90deg, rgba(255,59,59,0.15), rgba(255,138,128,0.08));
+  color: #fff;
+  border: 1px solid rgba(255,59,59,0.3);
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 220ms ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button:hover, .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 34px rgba(255,59,59,0.15);
+  background: linear-gradient(90deg, rgba(255,59,59,0.25), rgba(255,138,128,0.15));
+}
+
+/* Inputs */
+input[type="text"], input[type="password"], input[type="number"], input[type="email"], input[type="tel"], select {
+  padding: 14px 16px;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255,59,59,0.15);
+  background: rgba(0,0,0,0.3);
+  color: #f6dede;
+  font-size: 0.98rem;
+  outline: none;
+  margin-bottom: 15px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(255, 59, 59, 0.1);
+}
+
+/* Links */
+a { color: var(--accent-2); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--accent); text-decoration: underline; }
+
+/* --- HOME PAGE SPECIFIC --- */
+.top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 1.1rem; color: var(--accent); }
+.ai-section { margin: 20px 0; display: flex; justify-content: center; }
+.ai-section lottie-player {
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,59,59,0.1), transparent 60%);
+  animation: float 4.5s ease-in-out infinite;
+}
+
+.input-wrap { display: flex; width: 100%; max-width: 600px; margin: 0 auto 20px auto; gap: 10px; }
+#micBtn { background: transparent; padding: 10px; border: 1px solid rgba(255,59,59,0.3); border-radius: 8px; cursor: pointer; color: var(--accent); }
+#micBtn.listening { background: var(--accent); color: black; box-shadow: 0 0 20px var(--accent); }
+
+/* --- LOGIN & REGISTER PAGES --- */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  width: 100%;
+}
+
+.auth-form {
+  width: 400px; /* Narrower for login */
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form h2 { margin-bottom: 25px; }
+.auth-form p { margin-top: 15px; font-size: 0.9rem; color: var(--text-muted); }
+
+/* Flash Messages (Errors) */
+.error {
+  background: rgba(255, 59, 59, 0.2);
+  border: 1px solid var(--accent);
+  color: #ffdede;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+/* --- PROFILE / DIGITAL HEALTH CARD --- */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(0,0,0,0.4);
+  border-bottom: 1px solid rgba(255,59,59,0.1);
+  margin-bottom: 30px;
+  border-radius: 12px;
+}
+
+.top-nav h1 { font-size: 1.5rem; margin: 0; }
+.btn-danger { border-color: #ff3b3b; color: #ff3b3b; background: transparent; }
+.btn-danger:hover { background: #ff3b3b; color: black; }
+
+.health-card {
+  width: 500px;
+  padding: 0; /* Let header fill width */
+  text-align: left;
+  margin: 0 auto;
+}
+
+.card-header {
+  background: linear-gradient(135deg, rgba(255,59,59,0.2), rgba(0,0,0,0.6));
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid rgba(255,59,59,0.2);
+}
+
+.avatar {
+  width: 70px; height: 70px;
+  background: rgba(0,0,0,0.5);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(255,59,59,0.2);
+}
+
+.header-info h2 { margin: 0; font-size: 1.8rem; -webkit-text-fill-color: initial; color: white; background: none; }
+.header-info p { color: var(--accent-2); margin: 0; font-size: 0.9rem; }
+
+.card-body { padding: 30px; }
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: var(--text-muted);
+}
+
+.info-row strong { color: var(--text-main); }
+.status-active { color: #4caf50; font-weight: bold; text-shadow: 0 0 10px rgba(76,175,80,0.4); }
+
+.card-footer {
+  padding: 15px;
+  background: rgba(0,0,0,0.2);
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.3);
+}
+
+/* --- DASHBOARD (TABLES) --- */
+.dashboard-container { width: 1000px; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+th {
+  background: rgba(255,59,59,0.1);
+  color: var(--accent-2);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+tr:hover { background: rgba(255,255,255,0.02); }
+td { color: var(--text-muted); }
+
+/* --- OUTPUT SECTION (ADVICE) --- */
+#conditions { list-style: none; display: grid; gap: 10px; margin-top: 20px; }
+#conditions li {
+  padding: 15px;
+  border-radius: 10px;
+  background: rgba(255,59,59,0.05);
+  border: 1px solid rgba(255,59,59,0.1);
+  text-align: left;
+  animation: slideIn 0.4s ease forwards;
+}
+#conditions li strong { color: var(--accent-2); font-size: 1.1rem; display: block; margin-bottom: 5px; }
+.cond-cause { color: #ccc; font-size: 0.9rem; display: block; }
+.cond-solution { color: #fff; font-weight: 500; margin-top: 5px; display: block; }
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(-1deg); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Tweaks */
+@media (max-width: 640px) {
+  .container, .auth-form, .health-card { width: 95%; padding: 20px; }
+  .input-wrap { flex-direction: column; }
+  .top-row { flex-direction: column; gap: 10px; }
+  .health-card { width: 100%; }
+}
+/* --- PDF PRINT STYLING (The Magic) --- */
+@media print {
+    /* 1. इन सबको छिपा दो (Hide Everything) */
+    body * {
+        visibility: hidden;
+    }
+    
+    .navbar, .input-section, .sos-btn, #micBtn, button {
+        display: none !important;
+    }
+
+    /* 2. सिर्फ रिजल्ट बॉक्स को दिखाओ (Show Only Result) */
+    .output-section, .output-section * {
+        visibility: visible;
+    }
+
+    /* 3. रिजल्ट को पेज के बीच में डॉक्टर के पर्चे जैसा दिखाओ */
+    .output-section {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: 2px solid black;
+        padding: 40px;
+        background: white !important; /* PDF में काला बैकग्राउंड अच्छा नहीं लगता */
+        color: black !important;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    /* 4. PDF Header (सिर्फ PDF में दिखेगा) */
+    .output-section::before {
+        content: "🏥 AI HEALTH ASSISTANT - MEDICAL REPORT";
+        display: block;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+    }
+
+    /* 5. PDF Footer (Date & Signature) */
+    .output-section::after {
+        content: "Note: This is an AI-generated advice. Please consult a real doctor for serious issues.\A \A Date: " attr(data-date);
+        white-space: pre; /* लाइन ब्रेक के लिए */
+        display: block;
+        margin-top: 50px;
+        font-size: 12px;
+        text-align: right;
+        color: #555;
+    }
+}
+

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Health Advisor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-row">
+            <div class="brand">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff3b3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                </svg>
+                <h1>AI Health Advisor</h1>
+            </div>
+            
+            <div class="auth-links">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a> | 
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a> | 
+                    <a href="{{ url_for('register') }}">Register</a> | 
+                    <a href="{{ url_for('register_doctor') }}">Doctor Registration</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="ai-section">
+            <lottie-player 
+                src="https://assets7.lottiefiles.com/packages/lf20_jcikwtux.json"
+                background="transparent"
+                speed="1"
+                style="width: 250px; height: 250px;"
+                loop autoplay>
+            </lottie-player>
+        </div>
+
+        <div class="form-section">
+            <div class="input-wrap">
+                <input type="hidden" id="checkLogin" value="{{ 'yes' if current_user.is_authenticated else 'no' }}">
+                <input type="text" id="symptoms" placeholder="Describe your symptoms (e.g., 'I have a fever and headache')...">
+                <button id="micBtn" title="Speak" aria-label="Speak">🎤</button>
+            </div>
+            
+            <div class="controls">
+                <select id="langSelect">
+                    <option value="en-US">English (US)</option>
+                    <option value="hi-IN">Hindi (India)</option>
+                </select>
+                <button onclick="getAdvice()">Get Advice</button>
+            </div>
+        </div>
+
+        <div class="output-section">
+            <h2>Analysis Result</h2>
+            <ul id="conditions"></ul>
+            <div id="advice"></div>
+            
+            <div class="voice-controls">
+                <div class="button-group" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+    <button id="speakAdviceBtn" class="action-btn" onclick="playAdviceAudio()">🔊 Read Advice</button>
+    <button onclick="downloadPDF()" class="action-btn" style="background-color: #2ecc71;">📄 Download Report</button>
+</div>
+            </div>
+        </div>
+        
+       <div style="margin-top: 80px; padding: 40px 20px; background-color: #050505; text-align: center; border-top: 1px solid #222;">
+    
+    <p style="color: #444; font-size: 0.85rem; margin-bottom: 20px;">
+        &copy; 2025 AI Health Assistant Project | Developed by Vaibhav Tiwari & Utkarsh Trivedi |
+    </p>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Hidden input se pata karenge login status
+    const isLoggedIn = document.getElementById('checkLogin').value === 'yes';
+
+    if (!isLoggedIn) {
+        const symptomsInput = document.getElementById('symptoms');
+        const micBtn = document.getElementById('micBtn');
+
+        // Text box par click karte hi redirect karein
+        if (symptomsInput) {
+            symptomsInput.addEventListener('mousedown', function(e) {
+                e.preventDefault(); // Typing rokne ke liye
+                window.location.href = "/register?reason=ask";
+            });
+        }
+
+        // Mic button par click karte hi redirect karein
+        if (micBtn) {
+            micBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = "/register?reason=ask";
+            });
+        }
+
+        function playAdviceAudio() {
+    // 1. Dhyan dein: Yahan 'advice-result-box' ki jagah us div ki ID dalein 
+    // jahan aapka "Analysis Result" ka text print hota hai.
+    let textToRead = document.getElementById('advice-result-box').innerText; 
+
+    // 2. Dropdown se language nikalna (Apne dropdown ki ID check kar lein)
+    let selectedLang = document.getElementById('language-dropdown').value; 
+
+    // Agar text khali hai, toh kuch nahi bolega
+    if (!textToRead || textToRead.trim() === "") {
+        alert("Pehle advice lijiye phir read button dabayein!");
+        return;
+    }
+
+    // 3. Bolne wali API ko set karna
+    let utterance = new SpeechSynthesisUtterance(textToRead);
+
+    // Bhasha check karna (Agar aapke dropdown mein 'Hindi' likha hai, toh ye condition chalegi)
+    if (selectedLang.includes('Hindi')) {
+        utterance.lang = 'hi-IN'; // Hindi aawaz
+    } else {
+        utterance.lang = 'en-US'; // English aawaz
+    }
+
+    // Bolna shuru karo!
+    window.speechSynthesis.speak(utterance);
+}
+    }
+});
+</script>
+</body>
+</html>

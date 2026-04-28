@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Panel - {{ doctor.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .doctor-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .doctor-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .info-item {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .appointments-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .appointment-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        
+        .appointment-card.pending {
+            border-left-color: #ffa500;
+        }
+        
+        .appointment-card.accepted {
+            border-left-color: #28a745;
+        }
+        
+        .appointment-card.rejected {
+            border-left-color: #dc3545;
+        }
+        
+        .patient-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .detail-box {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-accepted {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-accept {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-accept:hover {
+            background: #218838;
+        }
+        
+        .btn-reject:hover {
+            background: #c82333;
+        }
+        
+        .patient-history {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .history-toggle {
+            cursor: pointer;
+            color: #667eea;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .history-items {
+            display: none;
+            margin-top: 15px;
+        }
+        
+        .history-items.show {
+            display: block;
+        }
+        
+        .history-item {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .history-date {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            float: right;
+        }
+        
+        .no-appointments {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        
+        <!-- Doctor Header -->
+        <div class="doctor-header">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <h1>👨‍⚕️ {{ doctor.name }}</h1>
+                    <p style="opacity: 0.9; margin: 5px 0;">{{ doctor.specialization or 'General Physician' }}</p>
+                </div>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+            
+            <div class="doctor-info">
+                <div class="info-item">
+                    <div class="detail-label">Hospital/Clinic</div>
+                    <div class="detail-value">{{ doctor.hospital or 'Not provided' }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">{{ doctor.email or 'Not provided' }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="detail-label">Phone</div>
+                    <div class="detail-value">{{ doctor.phone or 'Not provided' }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="detail-label">License Number</div>
+                    <div class="detail-value">{{ doctor.license_number or 'Not provided' }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Section -->
+        <h2 style="margin-bottom: 20px;">📋 Patient Appointments</h2>
+        
+        {% if appointments %}
+        <div class="appointments-grid">
+            {% for appt in appointments %}
+            <div class="appointment-card {{ appt.status.lower() }}">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <h3 style="margin: 0;">{{ appt.user.name or appt.user.username }}</h3>
+                    <span class="status-badge status-{{ appt.status.lower() }}">
+                        {{ appt.status }}
+                    </span>
+                </div>
+                
+                <div class="patient-details">
+                    <div class="detail-box">
+                        <div class="detail-label">Username</div>
+                        <div class="detail-value">{{ appt.user.username }}</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-label">Age</div>
+                        <div class="detail-value">{{ appt.user.age or 'N/A' }} {% if appt.user.age %}years{% endif %}</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-label">Appointment Date</div>
+                        <div class="detail-value">{{ appt.date }}</div>
+                    </div>
+                    <div class="detail-box">
+                        <div class="detail-label">Reason</div>
+                        <div class="detail-value">{{ appt.reason or 'General checkup' }}</div>
+                    </div>
+                </div>
+                
+                <!-- Patient Health History -->
+                <div class="patient-history">
+                    <div class="history-toggle" onclick="toggleHistory('{{ appt.id }}')">
+                        <span id="arrow-{{ appt.id }}">▶</span>
+                        <span>View Patient Health History</span>
+                    </div>
+                    
+                    <div id="history-{{ appt.id }}" class="history-items">
+                        {% if patient_histories.get(appt.user_id) %}
+                            {% for log in patient_histories[appt.user_id] %}
+                            <div class="history-item">
+                                <div class="history-date">{{ log.date_time }}</div>
+                                <div><strong>Symptoms:</strong> {{ log.symptoms }}</div>
+                                <div><strong>AI Advice:</strong> {{ log.advice }}</div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p style="color: #999; margin: 10px 0;">No previous health records found.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Action Buttons (Only for Pending) -->
+                {% if appt.status == "Pending" %}
+                <div class="action-buttons">
+                    <a href="/update_appt_status/{{ appt.id }}/Accepted" class="btn btn-accept">
+                        ✓ Accept
+                    </a>
+                    <a href="/update_appt_status/{{ appt.id }}/Rejected" class="btn btn-reject">
+                        ✗ Reject
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-appointments">
+            <h3>📭 No Appointments Yet</h3>
+            <p>Patients will be able to book appointments with you soon.</p>
+        </div>
+        {% endif %}
+        
+    </div>
+
+    <script>
+        function toggleHistory(appointmentId) {
+            const historyDiv = document.getElementById('history-' + appointmentId);
+            const arrow = document.getElementById('arrow-' + appointmentId);
+            
+            if (historyDiv.classList.contains('show')) {
+                historyDiv.classList.remove('show');
+                arrow.textContent = '▶';
+            } else {
+                historyDiv.classList.add('show');
+                arrow.textContent = '▼';
+            }
+        }
+    </script>
+</body>
+</html>

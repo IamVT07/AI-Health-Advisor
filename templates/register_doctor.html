@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration - AI Health Advisor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="auth-container">
+        <form action="/register_doctor" method="POST" class="auth-form">
+            {% if alert_msg %}
+            <div style="color: #ff4b4b; font-weight: bold; background: rgba(255, 75, 75, 0.1); padding: 10px; border: 1px solid #ff4b4b; border-radius: 5px; text-align: center; margin-bottom: 20px;">
+                ⚠️ {{ alert_msg }}
+            </div>
+            {% endif %}
+            
+            <h2>🩺 Doctor Registration</h2>
+            <p style="text-align: center; color: #090101; margin-bottom: 20px;">Register as a Medical Professional</p>
+            
+            <h3>Login Credentials</h3>
+            <input type="text" name="username" placeholder="Choose a Username" required>
+            <input type="password" name="password" placeholder="Choose a Password" required>
+            
+            <h3>Personal Information</h3>
+            <input type="text" name="name" placeholder="Full Name (e.g., Dr. Amit Sharma)" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="tel" name="phone" placeholder="Phone Number" required>
+            <input type="number" name="age" placeholder="Age" required>
+            <select name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+
+            
+            <h3>Professional Details</h3>
+            <select name="specialization" required>
+                <option value="">Select Specialization</option>
+                <option value="Cardiologist (Heart)">Cardiologist (Heart)</option>
+                <option value="Dermatologist (Skin)">Dermatologist (Skin)</option>
+                <option value="General Physician">General Physician</option>
+                <option value="Pediatrician (Child)">Pediatrician (Child)</option>
+                <option value="Orthopedic (Bone)">Orthopedic (Bone)</option>
+                <option value="Dentist (Teeth)">Dentist (Teeth)</option>
+                <option value="Neurologist (Brain/Nerves)">Neurologist (Brain/Nerves)</option>
+                <option value="Gynecologist">Gynecologist</option>
+                <option value="ENT Specialist">ENT Specialist</option>
+                <option value="Psychiatrist">Psychiatrist</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <input type="text" name="hospital" placeholder="Hospital/Clinic Name" required>
+            <input type="text" name="license_number" placeholder="Medical License Number" required>
+            
+            <button type="submit">Register as Doctor</button>
+            
+            <p>Already registered? <a href="/login">Login Here</a></p>
+            <p>Are you a patient? <a href="/register">Patient Registration</a></p>
+        </form>
+    </div>
+</body>
+</html>
