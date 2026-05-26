@@ -43,7 +43,8 @@ SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD")
 def send_doctor_alert(doctor_name, patient_name, date, to_email, appt_id, doctor_id):
     try:
         subject = f"New Appointment Request: {patient_name}"
-        dashboard_url = f"http://127.0.0.1:5000/login?next=/doctor_panel/{doctor_id}"
+            base_url = request.host_url 
+        dashboard_url = f"{base_url}login?next=/doctor_panel/{doctor_id}"
         body = f"""
         <html><body style="font-family: Arial, sans-serif;">
             <h2>Hello {doctor_name},</h2>
