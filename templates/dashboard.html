@@ -70,14 +70,13 @@
 </head>
 <body>
 
-    <nav style="padding: 15px 30px; background: #000; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333;">
-        <h1 style="color:white; margin:0; font-size: 1.5rem;">🏥 Health Assistant</h1>
-        <div>
-             <a href="/" style="color: #ff4b4b; text-decoration: none; font-weight: bold; border: 1px solid #ff4b4b; padding: 5px 15px; border-radius: 20px;">Home</a>
-            <a href="/logout" style="color: #ff4b4b; text-decoration: none; font-weight: bold; border: 1px solid #ff4b4b; padding: 5px 15px; border-radius: 20px;">Logout</a>
+    <nav style="padding: 12px 20px; background: #000; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; flex-wrap: wrap; gap: 10px;">
+        <h1 style="color:white; margin:0; font-size: 1.3rem; white-space: nowrap;">🏥 Health Assistant</h1>
+     <div style="display: flex; gap: 8px; flex-wrap: nowrap; align-items: center;">
+                <a href="/" style="color: #ff4b4b; text-decoration: none; font-weight: bold; border: 1px solid #ff4b4b; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; white-space: nowrap;">Home</a>
+                    <a href="/logout" style="color: #ff4b4b; text-decoration: none; font-weight: bold; border: 1px solid #ff4b4b; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; white-space: nowrap;">Logout</a>
         </div>
-    </nav>
-
+</nav>
     <div class="dash-container">
         <div class="tip-box">
             💡 <strong>Daily Health Tip:</strong> <span id="daily-tip">Loading...</span>
